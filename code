@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f9f9f9;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSV Manager</h1>
+        <div class="form-group">
+            <label for="search">Search</label>
+            <input type="text" id="search" placeholder="Search by any field...">
+        </div>
+        <div class="form-group">
+            <label for="add">Add Row (comma separated values)</label>
+            <input type="text" id="add" placeholder="Value1, Value2, Value3,...">
+            <button onclick="addRow()">Add Row</button>
+        </div>
+        <div class="form-group">
+            <label for="delete">Delete Row (search term)</label>
+            <input type="text" id="delete" placeholder="Search term to delete...">
+            <button onclick="deleteRow()">Delete Row</button>
+        </div>
+        <table id="csvTable" class="hidden">
+            <thead>
+                <tr></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script>
+        let csvData = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('data.csv')
+                .then(response => response.text())
+                .then(data => {
+                    csvData = data.split('\n').map(row => row.split(','));
+                    displayTable();
+                });
+        });
+
+        function displayTable() {
+            const table = document.getElementById('csvTable');
+            const thead = table.querySelector('thead tr');
+            const tbody = table.querySelector('tbody');
+
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            if (csvData.length > 0) {
+                table.classList.remove('hidden');
+                csvData[0].forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    thead.appendChild(th);
+                });
+
+                csvData.slice(1).forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+            } else {
+                table.classList.add('hidden');
+            }
+        }
+
+        function addRow() {
+            const newRow = document.getElementById('add').value.split(',');
+            csvData.push(newRow);
+            displayTable();
+        }
+
+        function deleteRow() {
+            const searchTerm = document.getElementById('delete').value.toLowerCase();
+            csvData = csvData.filter(row => !row.some(cell => cell.toLowerCase().includes(searchTerm)));
+            displayTable();
+        }
+
+        document.getElementById('search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filteredData = csvData.filter(row => row.some(cell => cell.toLowerCase().includes(searchTerm)));
+            displayFilteredTable(filteredData);
+        });
+
+        function displayFilteredTable(data) {
+            const table = document.getElementById('csvTable');
+            const tbody = table.querySelector('tbody');
+
+            tbody.innerHTML = '';
+
+            data.slice(1).forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
