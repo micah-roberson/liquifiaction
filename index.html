@@ -37,10 +37,17 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
         table, th, td {
             border: 1px solid #ccc;
@@ -51,9 +58,6 @@
         }
         th {
             background-color: #f9f9f9;
-        }
-        .hidden {
-            display: none;
         }
     </style>
 </head>
@@ -74,12 +78,14 @@
             <input type="text" id="delete" placeholder="Search term to delete...">
             <button onclick="deleteRow()">Delete Row</button>
         </div>
-        <table id="csvTable" class="hidden">
-            <thead>
-                <tr></tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-container">
+            <table id="csvTable">
+                <thead>
+                    <tr></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
     <script>
         let csvData = [];
@@ -102,7 +108,6 @@
             tbody.innerHTML = '';
 
             if (csvData.length > 0) {
-                table.classList.remove('hidden');
                 csvData[0].forEach(header => {
                     const th = document.createElement('th');
                     th.textContent = header;
@@ -118,8 +123,6 @@
                     });
                     tbody.appendChild(tr);
                 });
-            } else {
-                table.classList.add('hidden');
             }
         }
 
