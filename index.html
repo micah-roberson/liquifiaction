@@ -144,7 +144,7 @@
         document.getElementById('search').addEventListener('input', function() {
             const searchTerms = this.value.toLowerCase().split(' ');
             const filteredData = csvData.filter(row =>
-                searchTerms.every(term =>
+                searchTerms.some(term =>
                     row.some(cell => cell.toLowerCase().includes(term))
                 )
             );
