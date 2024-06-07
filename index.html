@@ -84,7 +84,18 @@
         <div class="table-container">
             <table id="csvTable">
                 <thead>
-                    <tr></tr>
+                    <tr>
+                        <th>Manufacturer</th>
+                        <th>Part Number</th>
+                        <th>Part Description</th>
+                        <th>Part Location</th>
+                        <th>Part Details on the System</th>
+                        <th>Quantity # in Stock</th>
+                        <th>Unit Price $</th>
+                        <th>Date Used</th>
+                        <th>Date Re-Ordered</th>
+                        <th>Quantity Used</th>
+                    </tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -104,19 +115,11 @@
 
         function displayTable() {
             const table = document.getElementById('csvTable');
-            const thead = table.querySelector('thead tr');
             const tbody = table.querySelector('tbody');
 
-            thead.innerHTML = '';
             tbody.innerHTML = '';
 
             if (csvData.length > 0) {
-                csvData[0].forEach(header => {
-                    const th = document.createElement('th');
-                    th.textContent = header;
-                    thead.appendChild(th);
-                });
-
                 csvData.slice(1).forEach(row => {
                     const tr = document.createElement('tr');
                     row.forEach(cell => {
@@ -153,30 +156,18 @@
 
         function displayFilteredTable(data) {
             const table = document.getElementById('csvTable');
-            const thead = table.querySelector('thead');
             const tbody = table.querySelector('tbody');
 
             tbody.innerHTML = '';
 
-            data.forEach((row, rowIndex) => {
+            data.forEach(row => {
                 const tr = document.createElement('tr');
-                row.forEach((cell, cellIndex) => {
+                row.forEach(cell => {
                     const td = document.createElement('td');
                     td.textContent = cell;
                     tr.appendChild(td);
                 });
-                if (rowIndex === 0) {
-                    thead.innerHTML = ''; // Clear existing header
-                    const trHeader = document.createElement('tr');
-                    row.forEach(header => {
-                        const th = document.createElement('th');
-                        th.textContent = header;
-                        trHeader.appendChild(th);
-                    });
-                    thead.appendChild(trHeader);
-                } else {
-                    tbody.appendChild(tr);
-                }
+                tbody.appendChild(tr);
             });
         }
     </script>
